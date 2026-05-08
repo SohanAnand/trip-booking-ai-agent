@@ -2,21 +2,51 @@ services:
   - type: web
     name: trip-api
     runtime: python
-    plan: free
+    # Starter plan required for persistent disk. For ephemeral free-tier:
+    # change `plan: starter` -> `plan: free` and remove the `disk:` block below.
+    plan: starter
     buildCommand: pip install -e .
     startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
+    disk:
+      name: trip-data
+      mountPath: /var/data
+      sizeGB: 1
     envVars:
       - key: ANTHROPIC_API_KEY
         sync: false
       - key: MOCK_LLM
-        value: "false"
+        value: "0"
+      - key: LLM_MODEL_PRIMARY
+        value: claude-sonnet-4-6
+      - key: LLM_MODEL_FAST
+        value: claude-haiku-4-5-20251001
       - key: BACKEND
-        value: postgres
-      - key: DATABASE_URL
-        sync: false
+        value: sqlite
+      - key: SQLITE_PATH
+        value: /var/data/trip.db
       - key: APPROVAL_SIGNING_KEY
         sync: false
       - key: APPROVAL_VERIFY_KEY
         sync: false
+      - key: APPROVAL_KID
+        value: v1
+      - key: REQUEST_MAX_DOLLARS
+        value: "5.00"
+      - key: REQUEST_MAX_SECONDS
+        value: "300"
+      - key: DUFFEL_ACCESS_TOKEN
+        sync: false
+      - key: DUFFEL_API_VERSION
+        value: v2
+      - key: DUFFEL_STAYS_ENABLED
+        value: "false"
+      - key: LITEAPI_KEY
+        sync: false
+      - key: LITEAPI_USE_SANDBOX
+        value: "true"
+      - key: OPENWEATHER_API_KEY
+        sync: false
+      - key: BOOKING_PROVIDER
+        value: mock_always
       - key: CORS_ORIGINS_RAW
         sync: false
