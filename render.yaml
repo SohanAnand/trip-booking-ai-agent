@@ -2,15 +2,12 @@ services:
   - type: web
     name: trip-api
     runtime: python
-    # Starter plan required for persistent disk. For ephemeral free-tier:
-    # change `plan: starter` -> `plan: free` and remove the `disk:` block below.
-    plan: starter
+    # Free plan: no persistent disk; SQLite data resets on each redeploy/spin-up.
+    # To upgrade to persistence: set `plan: starter` and re-add a `disk:` block
+    # mounting at /var/data, then change SQLITE_PATH below to /var/data/trip.db.
+    plan: free
     buildCommand: pip install -e .
     startCommand: uvicorn api.main:app --host 0.0.0.0 --port $PORT
-    disk:
-      name: trip-data
-      mountPath: /var/data
-      sizeGB: 1
     envVars:
       - key: ANTHROPIC_API_KEY
         sync: false
@@ -23,7 +20,7 @@ services:
       - key: BACKEND
         value: sqlite
       - key: SQLITE_PATH
-        value: /var/data/trip.db
+        value: /tmp/trip.db
       - key: APPROVAL_SIGNING_KEY
         sync: false
       - key: APPROVAL_VERIFY_KEY
