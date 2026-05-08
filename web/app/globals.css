@@ -1,0 +1,264 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+ * Foundation. Apple-style palette — pure neutral surface, near-black text,
+ * cool gray hairlines, generous typography scale.
+ * ------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --bg:           #fbfbfd;
+  --surface:      #ffffff;
+  --surface-2:    #f5f5f7;
+
+  /* Text */
+  --text:         #1d1d1f;
+  --text-soft:    #424245;
+  --text-mute:    #6e6e73;
+  /* --text-faint was #86868b (~3.1:1 on #fbfbfd, fails WCAG AA 4.5:1).
+     Bumped to #6e6e73-equivalent for body-size text. Apple uses the lighter
+     tone only on large display text where the 3:1 large-text minimum applies;
+     we use this token on small helper labels, so accessibility wins. */
+  --text-faint:   #6b6b70;
+
+  /* Lines */
+  --hairline:     rgba(0, 0, 0, 0.08);
+  --hairline-2:   rgba(0, 0, 0, 0.13);
+
+  /* Accents (used sparingly) */
+  --accent:       #1d1d1f;       /* primary CTA — black, more concierge than Apple blue */
+  --accent-hover: #2d2d2f;
+  --link:         #0066cc;       /* Apple link blue for inline links */
+
+  /* Motion */
+  --ease-out:     cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft:    cubic-bezier(0.4, 0, 0.2, 1);
+  --spring:       cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Sticky-nav height. Sticky sidebars use `top: calc(var(--nav-h) + 16px)`
+     so they consistently clear the frosted nav across viewports. */
+  --nav-h:        48px;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-feature-settings: "ss01", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Apple-style hero typography. Tighten the tracking; weight 600 reads as
+ * confident without feeling heavy. */
+.display-xl {
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.022em;
+  line-height: 1.05;
+}
+
+.display-lg {
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.018em;
+  line-height: 1.1;
+}
+
+.display-md {
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "SF Pro Display", system-ui, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+.numerals-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------------------
+ * Components — pill button, hairline card, sticky translucent nav.
+ * ------------------------------------------------------------------------- */
+
+.btn-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 22px;
+  border-radius: 980px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  transition: background-color 200ms var(--ease-soft),
+              transform 200ms var(--spring);
+}
+.btn-pill:hover { background: var(--accent-hover); }
+.btn-pill:active { transform: scale(0.98); }
+.btn-pill:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  background: var(--accent);
+}
+
+.btn-pill-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 22px;
+  border-radius: 980px;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 500;
+  border: 1px solid var(--hairline-2);
+  transition: background-color 200ms var(--ease-soft);
+}
+.btn-pill-ghost:hover { background: var(--surface-2); }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 12px;
+  border-radius: 980px;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--surface-2);
+  color: var(--text-soft);
+  border: 1px solid var(--hairline);
+  transition: background-color 180ms var(--ease-soft),
+              color 180ms var(--ease-soft);
+}
+.chip:hover {
+  background: #ebebed;
+  color: var(--text);
+}
+
+/* Apple-style flat card. Pure white, hairline border, no shadow at rest. */
+.surface-card {
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 18px;
+  transition: border-color 250ms var(--ease-soft),
+              transform 350ms var(--spring),
+              box-shadow 350ms var(--ease-soft);
+}
+.surface-card-interactive:hover {
+  border-color: var(--hairline-2);
+  transform: translateY(-1px);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03),
+              0 12px 32px -16px rgba(0, 0, 0, 0.12);
+}
+.surface-card-interactive:active { transform: translateY(0); }
+
+/* Sticky translucent nav, frosted-glass style. */
+.glass-nav {
+  background: rgba(251, 251, 253, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--hairline);
+}
+
+/* Hairline divider, used between sections. */
+.hairline {
+  border-bottom: 1px solid var(--hairline);
+}
+
+/* ---------------------------------------------------------------------------
+ * Motion. Apple uses subtle spring physics — short, smooth, never linear.
+ * ------------------------------------------------------------------------- */
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes orb-pulse {
+  0%, 100% { transform: scale(1);   opacity: 0.85; }
+  50%      { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes orb-orbit {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.anim-fade-up    { animation: fade-up 600ms var(--spring) both; }
+.anim-fade-in    { animation: fade-in 360ms var(--ease-out) both; }
+.anim-scale-in   { animation: scale-in 380ms var(--spring) both; }
+.anim-orb-pulse  { animation: orb-pulse 1.6s var(--ease-soft) infinite; }
+.anim-orb-orbit  { animation: orb-orbit 3.2s linear infinite; }
+
+.shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.06) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s linear infinite;
+}
+
+/* Reduce motion respectfully. Includes Tailwind's `animate-spin` (drawer
+ * spinner) and Tailwind transitions used on stage crossfades — neither was
+ * caught by the original block, so reduced-motion users still saw a spinning
+ * ring and crossfading text. */
+@media (prefers-reduced-motion: reduce) {
+  .anim-fade-up,
+  .anim-fade-in,
+  .anim-scale-in,
+  .anim-orb-pulse,
+  .anim-orb-orbit,
+  .shimmer-bg,
+  .surface-card-interactive,
+  .animate-spin,
+  [class*="transition-"] {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Focus + scrollbar — minimal, calm.
+ * ------------------------------------------------------------------------- */
+
+:where(button, a, input, textarea):focus-visible {
+  outline: 2px solid rgba(0, 102, 204, 0.6);    /* Apple-style focus blue */
+  outline-offset: 2px;
+  /* No border-radius — outlines respect the element's own shape, so a pill
+     button stays pill-shaped on focus rather than getting boxed in. */
+}
+
+.thin-scroll::-webkit-scrollbar { width: 6px; }
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 999px;
+}
+.thin-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.28);
+}
