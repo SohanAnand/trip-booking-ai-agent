@@ -1,0 +1,39 @@
+# fly.toml — Fly.io configuration for the Trip Booking API.
+# Deploy: `fly launch --no-deploy` to claim app name + region, then `fly deploy`.
+
+app = "trip-booking-api"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  MOCK_LLM = "0"
+  LLM_MODEL_PRIMARY = "claude-sonnet-4-6"
+  LLM_MODEL_FAST = "claude-haiku-4-5-20251001"
+  BACKEND = "sqlite"
+  SQLITE_PATH = "/data/trip.db"
+  APPROVAL_KID = "v1"
+  REQUEST_MAX_DOLLARS = "5.00"
+  REQUEST_MAX_SECONDS = "300"
+  DUFFEL_API_VERSION = "v2"
+  DUFFEL_STAYS_ENABLED = "false"
+  LITEAPI_USE_SANDBOX = "true"
+  BOOKING_PROVIDER = "mock_always"
+
+[[mounts]]
+  source = "trip_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
